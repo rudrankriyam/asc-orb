@@ -1,8 +1,10 @@
 version: 2.1
 
 description: |
-  Install, configure, and run asc (App Store Connect CLI) in CircleCI.
+  Official CircleCI orb for asc (App Store Connect CLI).
+  Install asc, configure secure App Store Connect API auth, and automate iOS/TestFlight CI/CD workflows.
+  Supports Linux and macOS executors.
 
 display:
-  home_url: "https://github.com/rudrankriyam/App-Store-Connect-CLI"
+  home_url: "https://circleci.com/developer/orbs/orb/rudrankriyam/asc"
   source_url: "https://github.com/rudrankriyam/asc-orb"

@@ -1,0 +1,19 @@
+description: Install and run asc on a macOS executor.
+usage:
+  version: 2.1
+  orbs:
+    asc: rudrankriyam/asc@x.y.z
+  jobs:
+    macos-install-and-check:
+      macos:
+        xcode: "15.4.0"
+      steps:
+        - asc/install:
+            version: latest
+            install_path: /usr/local/bin
+        - asc/run:
+            command: asc --version
+  workflows:
+    main:
+      jobs:
+        - macos-install-and-check
