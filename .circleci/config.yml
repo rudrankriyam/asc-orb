@@ -1,0 +1,85 @@
+version: 2.1
+
+orbs:
+  orb-tools: circleci/orb-tools@12.3.1
+  shellcheck: circleci/shellcheck@3.2.0
+
+filters-all: &filters-all
+  tags:
+    only: /.*/
+
+filters-dev: &filters-dev
+  branches:
+    ignore: main
+  tags:
+    ignore: /.*/
+
+filters-release: &filters-release
+  branches:
+    ignore: /.*/
+  tags:
+    only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+
+jobs:
+  script-smoke:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - run:
+          name: Install asc from script
+          command: |
+            set -euo pipefail
+            export ASC_VERSION=latest
+            export ASC_INSTALL_PATH=/tmp/asc-bin
+            bash src/scripts/install.sh
+      - run:
+          name: Run no-side-effect smoke checks
+          command: |
+            set -euo pipefail
+            /tmp/asc-bin/asc --version
+            /tmp/asc-bin/asc --help >/dev/null
+            /tmp/asc-bin/asc version >/dev/null
+
+workflows:
+  lint-pack-test-publish:
+    jobs:
+      - orb-tools/lint:
+          filters: *filters-all
+      - orb-tools/pack:
+          filters: *filters-all
+      - orb-tools/review:
+          orb_name: rudrankriyam/asc
+          filters: *filters-all
+      - shellcheck/check:
+          dir: src/scripts
+          filters: *filters-all
+      - script-smoke:
+          filters: *filters-all
+      - orb-tools/publish:
+          name: publish-dev
+          orb_name: rudrankriyam/asc
+          vcs_type: << pipeline.project.type >>
+          pub_type: dev
+          dev_label: pr
+          context: circleci-orb-publishing
+          requires:
+            - orb-tools/lint
+            - orb-tools/pack
+            - orb-tools/review
+            - shellcheck/check
+            - script-smoke
+          filters: *filters-dev
+      - orb-tools/publish:
+          name: publish-prod
+          orb_name: rudrankriyam/asc
+          vcs_type: << pipeline.project.type >>
+          pub_type: production
+          context: circleci-orb-publishing
+          requires:
+            - orb-tools/lint
+            - orb-tools/pack
+            - orb-tools/review
+            - shellcheck/check
+            - script-smoke
+          filters: *filters-release

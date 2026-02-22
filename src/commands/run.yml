@@ -1,0 +1,21 @@
+description: |
+  Run a provided asc command string.
+parameters:
+  command:
+    type: string
+    description: Command to execute (for example, asc --help).
+  working_directory:
+    type: string
+    default: "."
+    description: Working directory used when running the command.
+  when:
+    type: string
+    default: "on_success"
+    description: Specify when to run this command (on_success, always, on_fail).
+
+steps:
+  - run:
+      name: Run asc command
+      working_directory: << parameters.working_directory >>
+      command: << parameters.command >>
+      when: << parameters.when >>

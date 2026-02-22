@@ -1,0 +1,29 @@
+description: |
+  Install asc from GitHub release assets.
+parameters:
+  version:
+    type: string
+    default: "latest"
+    description: asc version tag, for example v0.8.0, or latest.
+  install_path:
+    type: string
+    default: "/usr/local/bin"
+    description: Directory where the asc binary should be installed.
+  checksum:
+    type: string
+    default: ""
+    description: Optional SHA-256 checksum to verify for the downloaded binary.
+  when:
+    type: string
+    default: "on_success"
+    description: Specify when to run this command (on_success, always, on_fail).
+
+steps:
+  - run:
+      name: Install asc << parameters.version >>
+      environment:
+        ASC_VERSION: << parameters.version >>
+        ASC_INSTALL_PATH: << parameters.install_path >>
+        ASC_CHECKSUM: << parameters.checksum >>
+      command: <<include(scripts/install.sh)>>
+      when: << parameters.when >>

@@ -1,0 +1,26 @@
+description: |
+  Install asc and run smoke checks in a Linux CircleCI executor.
+parameters:
+  version:
+    type: string
+    default: "latest"
+    description: asc version tag to install.
+  install_path:
+    type: string
+    default: "/usr/local/bin"
+    description: Directory where asc should be installed.
+
+docker:
+  - image: cimg/base:stable
+
+steps:
+  - install:
+      version: << parameters.version >>
+      install_path: << parameters.install_path >>
+  - run:
+      name: Smoke test asc binary
+      command: |
+        set -euo pipefail
+        asc --version
+        asc --help >/dev/null
+        asc version >/dev/null

@@ -1,0 +1,19 @@
+description: Install asc and print version information.
+usage:
+  version: 2.1
+  orbs:
+    asc: rudrankriyam/asc@x.y.z
+  jobs:
+    install-and-check:
+      docker:
+        - image: cimg/base:stable
+      steps:
+        - asc/install:
+            version: latest
+        - run:
+            name: Check installed asc
+            command: asc --version
+  workflows:
+    main:
+      jobs:
+        - install-and-check
