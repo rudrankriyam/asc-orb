@@ -1,0 +1,10 @@
+description: Use the built-in smoke job in a workflow.
+usage:
+  version: 2.1
+  orbs:
+    asc: rudrankriyam/asc@x.y.z
+  workflows:
+    validate-asc:
+      jobs:
+        - asc/smoke:
+            version: latest

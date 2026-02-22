@@ -1,0 +1,22 @@
+description: Configure auth env vars and run a read-only asc command.
+usage:
+  version: 2.1
+  orbs:
+    asc: rudrankriyam/asc@x.y.z
+  jobs:
+    auth-and-run:
+      docker:
+        - image: cimg/base:stable
+      steps:
+        - asc/install:
+            version: latest
+        - asc/setup-auth:
+            key_id: ASC_KEY_ID
+            issuer_id: ASC_ISSUER_ID
+            private_key_b64: ASC_PRIVATE_KEY_B64
+        - asc/run:
+            command: asc apps list --output json
+  workflows:
+    main:
+      jobs:
+        - auth-and-run

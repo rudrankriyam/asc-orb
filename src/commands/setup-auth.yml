@@ -1,0 +1,49 @@
+description: |
+  Export asc authentication environment variables from CircleCI env var names.
+parameters:
+  key_id:
+    type: env_var_name
+    default: "ASC_KEY_ID"
+    description: Env var name containing the App Store Connect key ID.
+  issuer_id:
+    type: env_var_name
+    default: "ASC_ISSUER_ID"
+    description: Env var name containing the App Store Connect issuer ID.
+  private_key_path:
+    type: env_var_name
+    default: "ASC_PRIVATE_KEY_PATH"
+    description: Env var name containing a path to the private key file (optional).
+  private_key:
+    type: env_var_name
+    default: "ASC_PRIVATE_KEY"
+    description: Env var name containing raw private key content (optional).
+  private_key_b64:
+    type: env_var_name
+    default: "ASC_PRIVATE_KEY_B64"
+    description: Env var name containing base64-encoded private key content (optional).
+  profile:
+    type: string
+    default: ""
+    description: Optional profile value exported as ASC_PROFILE.
+  strict_auth:
+    type: string
+    default: ""
+    description: Optional strict-auth value exported as ASC_STRICT_AUTH.
+  when:
+    type: string
+    default: "on_success"
+    description: Specify when to run this command (on_success, always, on_fail).
+
+steps:
+  - run:
+      name: Configure asc auth environment
+      environment:
+        ASC_KEY_ID_ENV_VAR: << parameters.key_id >>
+        ASC_ISSUER_ID_ENV_VAR: << parameters.issuer_id >>
+        ASC_PRIVATE_KEY_PATH_ENV_VAR: << parameters.private_key_path >>
+        ASC_PRIVATE_KEY_ENV_VAR: << parameters.private_key >>
+        ASC_PRIVATE_KEY_B64_ENV_VAR: << parameters.private_key_b64 >>
+        ASC_PROFILE_VALUE: << parameters.profile >>
+        ASC_STRICT_AUTH_VALUE: << parameters.strict_auth >>
+      command: <<include(scripts/setup_auth.sh)>>
+      when: << parameters.when >>
